@@ -1,0 +1,78 @@
+---
+title: "Lab 10 - Grading the professor, Pt. 2"
+author: "Lindley Slipetz"
+date: "04/02/2021"
+output: github_document
+---
+
+### Load packages and data
+
+```{r load-packages, message=FALSE, warning = FALSE}
+library(tidyverse) 
+library(tidymodels)
+library(openintro)
+```
+
+### Exercise 1
+
+```{r load_data}
+evals <- evals
+```
+
+### Exercise 2
+
+```{r linear_reg_1}
+m_bty <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_bty_fit <- m_bty %>% 
+          fit(score ~ bty_avg, data = evals)
+m_bty_fit
+glance(m_bty_fit$fit)
+```
+The model is score = 3.88034 + 0.6664bty_avg. R^2 = 0.035 and adjusted R^2 = 0.033
+
+### Exercise 3
+
+```{r linear_reg_2}
+m_bty_gen <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_bty_gen_fit <- m_bty_gen %>% 
+          fit(score ~ bty_avg + gender, data = evals)
+m_bty_gen_fit
+glance(m_bty_gen_fit$fit)
+```
+
+
+
+score = 3.74734 + 0.7416bty_avg + 0.17239gender. R^2 = 0.059 and adjusted R^2 = 0.055.
+
+### Exercise 3
+
+For someone with a 0 beauty score who is female, the average score is 3.74734. A one unit increase in score is associated with a 0.7416 point increase in beauty score, holding gender constant. A one unit increase in score is more associated with males, holding beauty score constant.
+
+### Exercise 4
+
+5.9% of variability in score is explained by the model.
+
+### Exercise 5
+ 
+The equation for just males is score = 3.91973 + 0.7416bty_avg
+
+### Exercise 6
+  
+Males tend to have higher scores given the same beauty rating.
+
+### Exercise 7
+
+Males scores change by +0.17239, female scores change by -0.17239.
+
+
+### Exercise 8 
+Adjusted R^2 takes into account the number of predictors. Adjusted R^2 for m_bty was 0.033. Adjusted R^2 for m_bty_gen was R^2 = 0.055. This tells us that the addition of the gender variable increases variability explained. So, it's useful.
+
+### Exercise 9
+The slope of bty_avg was 0.6664 for m_bty. The slope of bty_avg was 0.7416. Yes, the addition of gender in the model has changed the parameter estimate for beauty. Beauty now has a greater influence when we control for gender. 
+
+
