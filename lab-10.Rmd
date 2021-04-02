@@ -75,4 +75,156 @@ Adjusted R^2 takes into account the number of predictors. Adjusted R^2 for m_bty
 ### Exercise 9
 The slope of bty_avg was 0.6664 for m_bty. The slope of bty_avg was 0.7416. Yes, the addition of gender in the model has changed the parameter estimate for beauty. Beauty now has a greater influence when we control for gender. 
 
+### Exercise 10
+
+Create a new model called m_bty_rank with gender removed and rank added in. Write the equation of the linear model and interpret the slopes and intercept in context of the dat
+
+```{r linear_reg_3}
+m_bty_rank <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_bty_rank_fit <- m_bty_rank %>% 
+          fit(score ~ bty_avg + rank, data = evals)
+m_bty_rank_fit
+glance(m_bty_rank_fit$fit)
+```
+The equation is score = 3.98155 + 0.06783bty_avg - 0.16070TT - 0.12623T with an R^2 of 0.047 and an adjusted R^2 of 0.040. The intercept tells us that the average score for a teaching  with zero beauty score is 3.98155. A one unit change in score is associated with a 0.06783 change in bty_avg when rank is held constant. The other two slopes tell us that higher scores are associated with teaching faculty. The adjusted R^2 tells us that the addition of rank makes the model better explain variance.
+
+### Exercise 11
+
+I don't think # of professors teaching the course will have as strong of an effect as the other variables. I was thinking that language in which a Professor received their degree might not matter, but then I thought there could be xenophobic implications to some languages. I chose cls_profs because I just don't see the presence of another professor having an effect. I would think it would have just as much of an effect as you having other professors teach your other classes. So, I just don't think there's anything special about multiple professors.
+
+### Exercise 12
+
+```{r linear_reg_9}
+m_cls_profs <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_cls_profs_fit <- m_cls_profs %>% 
+          fit(score ~ cls_profs, data = evals)
+m_cls_profs_fit
+glance(m_cls_profs_fit$fit)
+```
+The equation is score = 4.18464 - 0.2923cls_profsingle. The R^2 is 0.000649. So, I think we can say that this model doesn't really do a good job of explaining the variance.
+
+### Exercise 13
+
+You should not include cls_did_eval. This information is redundant with the information you get from cls_perc_eval and cls_students.
+
+### Exercise 14
+
+```{r linear_reg_4}
+m_all <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_all_fit <- m_all %>% 
+          fit(score ~ rank + ethnicity + gender + 
+                language + age + cls_perc_eval +
+                cls_students + cls_level + cls_profs +
+                cls_credits + bty_avg, data = evals)
+
+summary(m_all_fit$fit)
+glance(m_all_fit$fit)
+```
+
+### Exercise 15
+
+cls_prof has issues (i.e., it's not significant), so we'll remove that.
+
+```{r linear_reg_5}
+m_all <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_all_fit <- m_all %>% 
+          fit(score ~ rank + ethnicity + gender + 
+                language + age + cls_perc_eval +
+                cls_students + cls_level + 
+                cls_credits + bty_avg, data = evals)
+
+summary(m_all_fit$fit)
+glance(m_all_fit$fit)
+```
+Next we'll remove cls_level, which is also not significant. 
+
+```{r linear_reg_6}
+m_all <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_all_fit <- m_all %>% 
+          fit(score ~ rank + ethnicity + gender + 
+                language + age + cls_perc_eval +
+                cls_students +  
+                cls_credits + bty_avg, data = evals)
+
+summary(m_all_fit$fit)
+glance(m_all_fit$fit)
+```
+
+Next, we'll remove rank (also non-significant).
+
+```{r linear_reg_7}
+m_all <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_all_fit <- m_all %>% 
+          fit(score ~ ethnicity + gender + 
+                language + age + cls_perc_eval +
+                cls_students +  
+                cls_credits + bty_avg, data = evals)
+
+summary(m_all_fit$fit)
+glance(m_all_fit$fit)
+```
+
+The fit is consistently improving. cls_students is non-significant so we'll remove that.
+
+```{r linear_reg_8}
+m_all <- linear_reg() %>% 
+            set_engine('lm') %>% 
+            set_mode('regression')
+m_all_fit <- m_all %>% 
+          fit(score ~ ethnicity + gender + 
+                language + age + cls_perc_eval +
+                cls_credits + bty_avg, data = evals)
+
+summary(m_all_fit$fit)
+glance(m_all_fit$fit)
+```
+
+That reduced the fit. So, the best fitting model is score ~ ethnicity + gender + language + age + cls_perc_eval + cls_students + cls_credits + bty_avg
+
+### Exercise 16
+
+credits was the most significant categorical variable and cls_per_eval was the most significant numerical variable, so I'll interpret those. The slope of credits was 0.5230953. This means, holding all other predictors constant, a one unit increase in score was associated with a one credit course instead of a multi-credit course. The slope for cls_per_eval was 0.0057538, meaning, holding everything else constant, a one unit change in score is a associated with a .58% increase in percentage of evaluation.
+
+
+### Exercise 17
+
+A person with a high score would be not a minority, male, in a one credit class with students who participates in the evaluation, and beautiful. 
+
+### Exercise 18
+
+As I found out from my philosophy portfolio piece, different universities have different breakdowns of professors. It would be interesting to see, for instance, if having more women as professors would normalize having women as professors and decrease the disparity of men and women's scores. The same could be said for ethnicity as well. The other variables, like percent participation, seem plausibly generalizable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
